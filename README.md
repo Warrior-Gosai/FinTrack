@@ -1,0 +1,50 @@
+# 💰 FinTrack – Personal Finance Manager
+
+![Spring Boot](https://img.shields.io/badge/SpringBoot-3.0-green?logo=springboot)
+![Java](https://img.shields.io/badge/Java-17-orange?logo=java)
+![MySQL](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+FinTrack is a **personal finance management web application** built using **Spring Boot, Thymeleaf, MySQL, and Bootstrap**.  
+It allows users to **track income, expenses, categories, and filter transactions** – all in a **mobile-friendly dashboard UI**.
+
+---
+
+## 🚀 Features
+
+- 🔐 User Authentication (Signup, Signin with Session-based login)
+- 📊 Dashboard with income & expense overview
+- 📂 Manage categories (Income / Expense types)
+- ➕ Add / View Income and Expense records
+- 🔎 Filter transactions by category, date, or type
+- 📱 Responsive design (Bootstrap-based, works on mobile & desktop)
+
+---
+
+## 🛠 Tech Stack
+
+- **Backend:** Java, Spring Boot (MVC, JPA, Hibernate)
+- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap, Thymeleaf
+- **Database:** MySQL
+- **Tools:** Maven, Postman (API testing), IntelliJ / NetBeans / VS Code
+- **Version Control:** Git & GitHub
+
+---
+
+## 📂 Project Structure
+FinTrack/ <br/>
+│── src/main/java/com/fintrack/ <br/>
+│ ├── controller/ # Controllers (Dashboard, Signin, Category, etc.) <br/>
+│ ├── model/ # JPA Entities (User, Category, Income, Expense) <br/>
+│ ├── repository/ # Spring Data JPA Repositories <br/>
+│ ├── service/ # Business logic <br/>
+│ └── FinTrackApplication.java <br/>
+│ <br/>
+│── src/main/resources/ <br/>
+│ ├── templates/ # Thymeleaf templates (signin.html, dashboard.html, category.html, etc.) <br/>
+│ ├── static/css/ # CSS files <br/>
+│ ├── static/js/ # JavaScript files <br/>
+│ └── application.properties <br/>
+│ <br/>
+│── pom.xml # Maven dependencies <br/>
+│── README.md # Documentation <br/>
