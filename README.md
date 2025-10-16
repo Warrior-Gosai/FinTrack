@@ -34,17 +34,22 @@ It allows users to **track income, expenses, categories, and filter transactions
 ## 📂 Project Structure
 FinTrack/ <br/>
 │── src/main/java/com/fintrack/ <br/>
-│ ├── controller/ # Controllers (Dashboard, Signin, Category, etc.) <br/>
-│ ├── model/ # JPA Entities (User, Category, Income, Expense) <br/>
+│ ├── controller/ # Controllers  <br/>
+│ ├── model/ # JPA Entities <br/>
 │ ├── repository/ # Spring Data JPA Repositories <br/>
 │ ├── service/ # Business logic <br/>
 │ └── FinTrackApplication.java <br/>
 │ <br/>
 │── src/main/resources/ <br/>
-│ ├── templates/ # Thymeleaf templates (signin.html, dashboard.html, category.html, etc.) <br/>
+│ ├── templates/ # Thymeleaf templates <br/>
 │ ├── static/css/ # CSS files <br/>
 │ ├── static/js/ # JavaScript files <br/>
 │ └── application.properties <br/>
 │ <br/>
 │── pom.xml # Maven dependencies <br/>
 │── README.md # Documentation <br/>
+
+
+---
+
+<h3> Developed by : @Warrior-Gosai </h3>
