@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up | FinTrack</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        body {
+            background: #ebd6fd;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .signup-box {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .signup-box p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .avatar img {
+            width: 50px;
+            height: 50px;
+            background-color: #ede9fe;
+            padding: 10px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #6b21a8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+        }
+
+        .login-link {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: #6b21a8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="/assets/logo.png" alt="Logo" height="40" width="40" />
+                <span>FinTrack</span>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/signin" class="login">Login</a></li>
+                <li><a href="/signup" style="color: #fff;" class="get-started">Get Started</a></li>
+            </ul>
+            <div class="menu-toggle" id="menu-toggle">
+                <span class="menu-icon" id="menu-icon">☰</span>
+                <span class="close-icon" id="close-icon">✖</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="signup-container">
+        <!-- Show success message -->
+        <div th:if="${message}" style="color: green; text-align: center;">
+            <p th:text="${message}"></p>
+        </div>
+
+        <form class="signup-box" th:action="@{/signup}" method="post" th:object="${user}">
+            <h2>Create An Account</h2>
+            <p>Start tracking your spendings by joining with us.</p>
+
+            <div class="avatar">
+                <img src="/assets/logo.png" />
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="name" th:field="*{name}" placeholder="Enter Name" required />
+                <input type="email" id="email" th:field="*{email}" placeholder="name@example.com" required />
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" th:field="*{password}" placeholder="Password" required />
+                <span class="toggle-password" onclick="togglePassword()"></span>
+            </div>
+
+            <button type="submit" class="signup-btn">SIGN UP</button>
+            <p class="login-link">Already have an account? <a href="/signin">Login</a></p>
+        </form>
+    </main>
+
+    <script src="/js/script.js"></script>
+    <script>
+        // Toggle password visibility
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        }
+
+        // Validation for signup form
+        document.querySelector(".signup-box").addEventListener("submit", function (e) {
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Name validation
+            if (name.length < 3) {
+                alert("Name must be at least 3 characters long.");
+                e.preventDefault();
+                return;
+            }
+
+            // Email validation
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                e.preventDefault();
+                return;
+            }
+
+            // Password validation (minimum 6 chars)
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                e.preventDefault();
+                return;
+            }
+        });
+
+    </script>
+</body>
+
+</html>

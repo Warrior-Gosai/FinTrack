@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense | FinTrack</title>
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .content {
+            margin-left: 260px;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .top-bar h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        .top-bar p {
+            margin: 4px 0 0;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .add-btn {
+            background-color: #d84449;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .card-section {
+            background: white;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .card-header .actions button {
+            background: #f3f4f6;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background: #ddd;
+        }
+
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .dialog-overlay.active {
+            display: flex;
+        }
+
+        .dialog-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 450px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .dialog-box input,
+        .dialog-box select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            padding: 10px 20px;
+            background-color: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        /* Expense Cards */
+        .expense-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .expense-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .expense-card h4 {
+            font-size: 1.1rem;
+            color: #d84449;
+            margin-bottom: 8px;
+        }
+
+        .expense-card p {
+            font-size: 0.95rem;
+            color: #333;
+            margin: 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-top: 9%;
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .dialog-box {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Logo" />
+            <h2>FinTrack</h2>
+        </div>
+        <i class="fa-solid fa-bars menu-icon" onclick="toggleSidebar()"></i>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Logo" />
+            <h2>FinTrack</h2>
+        </div>
+        <div class="profile">
+            <i class="fa-solid fa-user"></i>
+            <h3 th:text="${session.loggedUser != null ? session.loggedUser.email : 'User'}">User</h3>
+        </div>
+        <div class="menu">
+            <a href="/dashboard" onclick="closeSidebar()"><i class="fa-solid fa-table-cells-large"></i>
+                Dashboard</a>
+            <a href="/categories" onclick="closeSidebar()"><i class="fa-solid fa-list"></i> Category</a>
+            <a href="/income" onclick="closeSidebar()"><i class="fa-solid fa-wallet"></i> Income</a>
+            <a href="/expense" onclick="closeSidebar()" class="active"><i class="fa-solid fa-coins"></i> Expense</a>
+            <a href="/filter" onclick="closeSidebar()"><i class="fa-solid fa-filter"></i> Filters</a>
+            <a href="/logout" onclick="closeSidebar()"><i class="fa-solid fa-close"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div class="container">
+            <div class="top-bar">
+                <div>
+                    <h2>Expense Overview</h2>
+                    <p>Track your spending trends and gain insights into where your money goes.</p>
+                </div>
+                <button class="add-btn" onclick="openDialog()">+ Add Expense</button>
+            </div>
+
+            <div class="chart-container" style="width:80%; margin:20px auto;">
+                <h3>Expense Graph</h3>
+                <canvas id="expenseChart"></canvas>
+            </div>
+
+            <div class="card-section">
+                <div class="card-header">
+                    <h3>All Expenses</h3>
+                    <div class="actions">
+                        <button>Email</button>
+                        <button onclick="window.location.href='/expense/pdf'">Download</button>
+                    </div>
+                </div>
+
+                <!-- If no expenses -->
+                <div th:if="${#lists.isEmpty(expenses)}" style="text-align:center; color:#777; padding:20px;">
+                    <!-- <i class="fa-solid fa-coins" style="font-size:20px;"></i> -->
+                    <p>No expenses added yet. Add some to get started!</p>
+                </div>
+
+                <!-- Expense Cards -->
+                <div class="expense-cards">
+                    <div class="expense-card" th:each="expense : ${expenses}">
+                        <h4 th:text="${expense.source}"></h4>
+                        <p th:text="'₹' + ${expense.amount}"></p>
+                        <p th:text="'Date: ' + ${expense.date}"></p>
+                        <p th:text="'Category: ' + ${expense.category.name}"></p>
+                        <a th:href="@{'/expense/delete/' + ${expense.id}}" style="color:red;"
+                            onclick="return confirm('Are you sure to delete this expense?');">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Expense Dialog -->
+    <div class="dialog-overlay" id="expenseDialog">
+        <div class="dialog-box">
+            <div class="dialog-header">
+                <span>Add Expense</span>
+                <i class="fa-solid fa-xmark" onclick="closeDialog()" style="cursor:pointer;"></i>
+            </div>
+
+            <form id="expenseForm" th:action="@{/expense/add}" method="post">
+                <label>Expense Source</label>
+                <input type="text" id="expenseSource" name="source" placeholder="e.g. Utility, Rent, Electricity"
+                    required>
+
+                <label for="category">Category</label>
+                <select id="expenseCategory" name="category.id" class="form-control" required>
+                    <option value="">Select Category</option>
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">
+                    </option>
+                </select>
+
+                <label>Amount</label>
+                <input type="number" step="0.01" name="amount" id="expenseAmount" placeholder="e.g., 500.00" required>
+
+                <label>Date</label>
+                <input type="date" name="date" id="expenseDate"
+                    th:value="${#dates.format(#dates.createNow(),'yyyy-MM-dd')}" required>
+
+                <button type="submit" class="submit-btn" style="margin-top: 15px;">Add Expense</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        const expenseLabels = /*[[${expenseLabels}]]*/[];
+        const expenseData = /*[[${expenseAmounts}]]*/[];
+
+        const ctxExpense = document.getElementById('expenseChart').getContext('2d');
+        const expenseChart = new Chart(ctxExpense, {
+            type: 'bar',
+            data: {
+                labels: expenseLabels,
+                datasets: [{
+                    label: 'Expense Amount (₹)',
+                    data: expenseData,
+                    backgroundColor: 'rgba(220, 53, 69, 0.7)',  //  red bars
+                    borderColor: 'rgba(220, 53, 69, 1)',        //  solid red border
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        function openDialog() {
+            document.getElementById("expenseDialog").classList.add("active");
+        }
+
+        function closeDialog() {
+            document.getElementById("expenseDialog").classList.remove("active");
+        }
+
+        // Validation
+        document.getElementById("expenseForm").addEventListener("submit", function (e) {
+            let source = document.getElementById("expenseSource").value.trim();
+            let category = document.getElementById("expenseCategory").value;
+            let amount = document.getElementById("expenseAmount").value;
+            let date = document.getElementById("expenseDate").value;
+
+            if (source.length < 3) {
+                alert("Expense source must be at least 3 characters long.");
+                e.preventDefault();
+                return;
+            }
+
+            if (category === "") {
+                alert("Please select a category.");
+                e.preventDefault();
+                return;
+            }
+
+            if (amount <= 0) {
+                alert("Amount must be greater than 0.");
+                e.preventDefault();
+                return;
+            }
+
+            // Validate Date (no future dates allowed)
+            let today = new Date().toISOString().split("T")[0];
+            if (date > today) {
+                alert("Date cannot be in the future.");
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+
+</body>
+
+</html>

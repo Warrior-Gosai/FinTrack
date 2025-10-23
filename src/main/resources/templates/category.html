@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Category | FinTrack</title>
+    <link rel="stylesheet" href="/css/dashboard.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        .content {
+            margin-left: 260px;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .title-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2rem;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .add-btn {
+            background-color: #6a1b9a;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            padding: 0 2rem 2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #777;
+            margin-top: 100px;
+        }
+
+        .empty-state i {
+            font-size: 50px;
+            margin-bottom: 10px;
+            color: #aaa;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .category-card {
+            width: 80%;
+            background: white;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            min-width: 200px;
+            max-width: 250px;
+        }
+
+        .dialog-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .close-btn {
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .dialog-box input,
+        .dialog-box select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            align-self: flex-end;
+            width: auto;
+            padding: 10px 20px;
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .message-box {
+            margin-bottom: 1rem;
+            background: #d0f0c0;
+            color: #2d6a4f;
+            padding: 10px 20px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .content {
+                margin-top: 9%;
+                margin-left: 0;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Logo" />
+            <h2>FinTrack</h2>
+        </div>
+        <i class="fa-solid fa-bars menu-icon" onclick="toggleSidebar()"></i>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Logo" />
+            <h2>FinTrack</h2>
+        </div>
+        <div class="profile">
+            <i class="fa-solid fa-user"></i>
+            <h3 th:text="${session.loggedUser != null ? session.loggedUser.email : 'User'}">User</h3>
+        </div>
+        <div class="menu">
+            <a href="/dashboard"><i class="fa-solid fa-table-cells-large"></i> Dashboard</a>
+            <a href="/categories" class="active"><i class="fa-solid fa-list"></i> Category</a>
+            <a href="/income"><i class="fa-solid fa-wallet"></i> Income</a>
+            <a href="/expense"><i class="fa-solid fa-coins"></i> Expense</a>
+            <a href="/filter"><i class="fa-solid fa-filter"></i> Filters</a>
+            <a href="/logout"><i class="fa-solid fa-close"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="content">
+        <div class="title-section">
+            <div class="title">All Categories</div>
+            <button class="add-btn" onclick="openDialog()">+ Add Category</button>
+        </div>
+
+        <div class="container">
+            <!-- Show empty state if no categories -->
+            <div th:if="${#lists.isEmpty(categories)}" class="empty-state">
+                <i class="fa-regular fa-folder-open"></i>
+                <p>No categories added yet. Add some to get started!</p>
+            </div>
+
+            <!-- Categories Grid -->
+            <div class="categories">
+                <div class="category-card" th:each="cat : ${categories}">
+                    <strong th:text="${cat.name}"></strong>
+                    <p th:text="'Type: ' + ${cat.description}"></p>
+                    <a th:href="@{'/categories/delete/' + ${cat.id}}" style="color:red;"
+                        onclick="return confirm('Are you sure to delete this category?');">Delete</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog Box -->
+    <div class="dialog-overlay" id="dialog">
+        <div class="dialog-box">
+            <div class="dialog-header">
+                <h3>Add Category</h3>
+                <span class="close-btn" onclick="closeDialog()">&times;</span>
+            </div>
+
+            <form th:action="@{/categories/add}" method="post" id="categoryForm">
+                <label>Category Name</label>
+                <input type="text" id="catName" name="name" placeholder="e.g., Freelance, Salary, Groceries" required />
+
+                <label>Category Type</label>
+                <select name="description" id="catType" required>
+                    <option value="Income">Income</option>
+                    <option value="Expense">Expense</option>
+                </select>
+
+                <button class="submit-btn" type="submit" style="margin-top: 15px;">Add Category</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const dialog = document.getElementById('dialog');
+        function openDialog() { dialog.style.display = 'flex'; }
+        function closeDialog() { dialog.style.display = 'none'; }
+        dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+
+        // Category form validation
+        document.getElementById("categoryForm").addEventListener("submit", function (e) {
+            let name = document.getElementById("catName").value.trim();
+            let type = document.getElementById("catType").value;
+
+            if (name.length < 3) {
+                alert("Category name must be at least 3 characters long.");
+                e.preventDefault();
+                return;
+            }
+
+            if (type === "") {
+                alert("Please select a category type.");
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+
+
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

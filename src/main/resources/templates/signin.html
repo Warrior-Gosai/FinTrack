@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | FinTrack</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        body {
+            background: #ebd6fd;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .login-box {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-box h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-box p {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .password-field .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #6b21a8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+        }
+
+        .signup-link {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .signup-link a {
+            color: #6b21a8;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            nav {
+                display: none;
+            }
+        }
+
+        .error-msg {
+            color: red;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="/assets/logo.png" alt="Logo" height="40" width="40" />
+                <span>FinTrack</span>
+            </div>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/signin" class="login">Login</a></li>
+                <li><a href="/signup" style="color: #fff;" class="get-started">Get Started</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="login-container">
+        <form class="login-box" th:action="@{/signin}" th:object="${user}" method="post"
+            onsubmit="return validateLogin()">
+            <h2>Welcome Back</h2>
+            <p>Please enter your details to log in</p>
+
+            <!-- Show error message -->
+            <div class="error-msg" th:text="${error}"></div>
+
+            <div class="input-group">
+                <input type="email" id="email" th:field="*{email}" placeholder="name@example.com" required />
+            </div>
+
+            <div class="input-group password-field">
+                <input type="password" id="password" th:field="*{password}" placeholder="Password" required />
+                <span class="toggle-password" onclick="togglePassword()">👁</span>
+            </div>
+
+            <button type="submit" class="login-btn">LOGIN</button>
+
+            <p class="signup-link">Don't have an account? <a th:href="@{/signup}">Signup</a></p>
+        </form>
+    </main>
+
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            passwordInput.type = passwordInput.type === "password" ? "text" : "password";
+        }
+
+        document.querySelector(".login-box").addEventListener("submit", function (e) {
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Email validation
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                e.preventDefault();
+                return;
+            }
+
+            // Password validation
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                e.preventDefault();
+                return;
+            }
+        });
+
+    </script>
+
+</body>
+
+</html>

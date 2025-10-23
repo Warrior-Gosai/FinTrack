@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Income | FinTrack</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script>
+        function openDialog() {
+            document.getElementById("dialog").style.display = "flex";
+        }
+        function closeDialog() {
+            document.getElementById("dialog").style.display = "none";
+        }
+    </script>
+
+    <style>
+        .content {
+            margin-left: 260px;
+            padding: 40px 20px;
+            width: 100%;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .top-bar h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #333;
+        }
+
+        .top-bar p {
+            margin: 4px 0 0;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .add-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .card-section {
+            background: white;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .card-header .actions button {
+            background: #f3f4f6;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-left: 8px;
+            cursor: pointer;
+        }
+
+        .actions button:hover {
+            background: #ddd;
+        }
+
+        .dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+
+        .dialog-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            width: 450px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .dialog-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .form-input,
+        select {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            padding: 10px 20px;
+            background-color: #6a1b9a;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        .success-message {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 6px;
+            font-size: 1rem;
+            display: none;
+            max-width: 300px;
+            margin: 0 auto 15px auto;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .income-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 1rem;
+        }
+
+        .income-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: 0.2s;
+        }
+
+        .income-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .income-card h4 {
+            font-size: 1.05rem;
+            color: #00a903;
+            margin-bottom: 8px;
+        }
+
+        .income-card p {
+            font-size: 0.95rem;
+            color: #333;
+            margin: 2px 0;
+        }
+
+        .income-card .del {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 0.9rem;
+            color: #e11d48;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                margin-top: 9%;
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .dialog-box {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Topbar -->
+    <header class="topbar">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Logo" />
+            <h2>FinTrack</h2>
+        </div>
+        <i class="fa-solid fa-bars menu-icon" onclick="toggleSidebar()"></i>
+    </header>
+
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div class="logo">
+            <img src="/assets/logo.png" alt="Logo" />
+            <h2>FinTrack</h2>
+        </div>
+        <div class="profile">
+            <i class="fa-solid fa-user"></i>
+            <h3 th:text="${session.loggedUser != null ? session.loggedUser.email : 'User'}">User</h3>
+        </div>
+        <div class="menu">
+            <a href="/dashboard" onclick="closeSidebar()"><i class="fa-solid fa-table-cells-large"></i>
+                Dashboard</a>
+            <a href="/categories" onclick="closeSidebar()"><i class="fa-solid fa-list"></i> Category</a>
+            <a href="/income" onclick="closeSidebar()" class="active"><i class="fa-solid fa-wallet"></i> Income</a>
+            <a href="/expense" onclick="closeSidebar()"><i class="fa-solid fa-coins"></i> Expense</a>
+            <a href="/filter" onclick="closeSidebar()"><i class="fa-solid fa-filter"></i> Filters</a>
+            <a href="/logout" onclick="closeSidebar()"><i class="fa-solid fa-close"></i> Logout</a>
+        </div>
+    </aside>
+
+    <div class="content">
+        <!-- <div class="title-section">
+            <div class="title">All Incomes</div>
+            <button class="add-btn" onclick="openDialog()">+ Add Income</button>
+        </div> -->
+
+        <div class="container">
+            <div class="top-bar">
+                <div>
+                    <h2>Income Overview</h2>
+                    <p>Track your earnings over time and analyze your income trends.</p>
+                </div>
+                <button class="add-btn" onclick="openDialog()">+ Add Income</button>
+            </div>
+            <div class="chart-container" style="width:80%; margin:20px auto;">
+                <h3>Income Graph</h3>
+                <canvas id="incomeChart"></canvas>
+            </div>
+
+
+            <div class="card-section">
+                <div class="card-header">
+                    <h3>All Incomes</h3>
+                    <div class="actions">
+                        <button>Email</button>
+                        <button onclick="window.location.href='/income/pdf'">Download</button>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(incomes)}" class="empty-state">
+                    <!-- <i class="fa-solid fa-coins"></i> -->
+                    <p>No incomes added yet. Add some to get started!</p>
+                </div>
+
+                <!-- Income Cards -->
+                <div class="income-cards" th:if="${!#lists.isEmpty(incomes)}">
+                    <div class="income-card" th:each="inc : ${incomes}">
+                        <h4 th:text="${inc.source}"></h4>
+                        <p th:text="'Amount: ₹' + ${inc.amount}"></p>
+                        <p th:text="'Date: ' + ${inc.date}"></p>
+                        <p th:text="'Category: ' + ${inc.category.name}"></p>
+                        <a th:href="@{'/income/delete/' + ${inc.id}}" style="color:red;"
+                            onclick="return confirm('Are you sure to delete this income?');">Delete</a>
+
+                        <button type="button" class="edit-btn" th:attr="data-id=${inc.id}, data-source=${inc.source}, data-amount=${inc.amount},
+                                data-date=${#temporals.format(inc.date,'yyyy-MM-dd')},
+                                data-category=${inc.category.id}">
+                            Edit
+                        </button>
+
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Add Income Dialog -->
+    <div class="dialog-overlay" id="dialog">
+        <div class="dialog-box">
+            <!-- <div id="incomeDialog" class="dialog-overlay" style="display:none;"> -->
+            <div class="dialog-header">
+                <span>Add Income</span>
+                <i class="fa-solid fa-xmark" onclick="closeDialog()" style="cursor:pointer;"></i>
+            </div>
+            <form th:action="@{/income/add}" method="post" id="incomeForm">
+                <label>Income Source</label>
+                <input type="text" id="incomeSource" name="source" placeholder="e.g. Salary, Freelance, Bonus"
+                    class="form-input" required>
+
+                <label for="category">Category</label>
+                <select id="category" name="category.id" class="form-control" required>
+                    <option value="">Select Category</option>
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">
+                    </option>
+                </select>
+
+                <label>Amount</label>
+                <input type="number" step="0.01" id="incomeAmount" name="amount" placeholder="e.g., 500.00"
+                    class="form-input" required>
+
+                <label>Date</label>
+                <input type="date" name="date" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}"
+                    class="form-input" id="incomeDate" required>
+
+                <button type="submit" class="submit-btn" style="margin-top: 15px;" id="formSubmitBtn">Add
+                    Income</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        const labels = /*[[${labels}]]*/[];
+        const data = /*[[${amounts}]]*/[];
+
+        const ctxIncome = document.getElementById('incomeChart').getContext('2d');
+        const incomeChart = new Chart(ctxIncome, {
+            type: 'bar',
+            data: {
+                labels: labels,      // dynamic labels
+                datasets: [{
+                    label: 'Income Amount (₹)',
+                    data: data,       // dynamic amounts
+                    backgroundColor: 'rgba(0, 128, 0, 0.7)',   // green with transparency
+                    borderColor: 'rgba(0, 128, 0, 1)',        // solid green
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #4B0082;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        input,
+        textarea {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #5c1abf;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4B0082;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="/assets/logo.png" alt="Logo" height="40" width="40" />
+                <span>FinTrack</span>
+            </div>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/signin" class="login">Login</a></li>
+                <li><a href="/signup" style="color: #fff;" class="get-started">Get Started</a></li>
+            </ul>
+
+            <div class="menu-toggle" id="menu-toggle">
+                <span class="menu-icon" id="menu-icon">☰</span>
+                <span class="close-icon" id="close-icon">✖</span>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h2>Contact Us</h2>
+        <form th:action="@{/contact}" method="post" th:object="${contact}" id="contactForm">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" th:field="*{name}" required />
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" th:field="*{email}" required />
+
+            <label for="message">Your Message</label>
+            <textarea id="message" th:field="*{message}" rows="5" required></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+
+        <!-- Success message -->
+        <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
+
+    </div>
+
+    <footer>
+        &copy; 2025 FinTrack. All Rights Reserved.
+    </footer>
+    <script src="/js/script.js"></script>
+    <script>
+        document.getElementById("contactForm").addEventListener("submit", function (e) {
+            let name = document.getElementById("name").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let message = document.getElementById("message").value.trim();
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Name validation
+            if (name.length < 3) {
+                alert("Name must be at least 3 characters long.");
+                e.preventDefault();
+                return;
+            }
+
+            // Email validation
+            if (!emailPattern.test(email)) {
+                alert("Please enter a valid email address.");
+                e.preventDefault();
+                return;
+            }
+
+            // Message validation
+            if (message.length < 10 || message.length > 1000) {
+                alert("Message must be between 10 and 1000 characters.");
+                e.preventDefault();
+                return;
+            }
+        });
+    </script>
+</body>
+
+</html>

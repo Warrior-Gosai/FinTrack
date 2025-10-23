@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinTrack Dashboard</title>
+  <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+
+<body>
+
+  <!-- Sidebar + Topbar -->
+  <header class="topbar">
+    <div class="logo">
+      <img src="/assets/res/logo.png" alt="Logo" />
+      <h2>FinTrack</h2>
+    </div>
+    <i class="fa-solid fa-bars menu-icon" onclick="toggleSidebar()"></i>
+  </header>
+
+  <aside id="sidebar">
+    <div class="logo">
+      <img src="/assets/logo.png" alt="Logo" />
+      <h2>FinTrack</h2>
+    </div>
+    <div class="profile">
+      <i class="fa-solid fa-user"></i>
+      <h3 th:text="${session.loggedUser != null ? session.loggedUser.email : 'User'}">User</h3>
+    </div>
+    <div class="menu">
+      <a href="/dashboard" class="active" onclick="closeSidebar()"><i class="fa-solid fa-table-cells-large"></i>
+        Dashboard</a>
+      <a href="/categories" onclick="closeSidebar()"><i class="fa-solid fa-list"></i> Category</a>
+      <a href="/income" onclick="closeSidebar()"><i class="fa-solid fa-wallet"></i> Income</a>
+      <a href="/expense" onclick="closeSidebar()"><i class="fa-solid fa-coins"></i> Expense</a>
+      <a href="/filter" onclick="closeSidebar()"><i class="fa-solid fa-filter"></i> Filters</a>
+      <a href="/logout" onclick="closeSidebar()"><i class="fa-solid fa-close"></i> Logout</a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main>
+    <div class="cards-row">
+      <div class="card card-balance">
+        <div class="card-details">
+          <h4>Total Balance</h4>
+          <p th:text="'₹' + ${totalBalance}"></p>
+        </div>
+        <i class="fa-solid fa-wallet"></i>
+      </div>
+      <div class="card card-income">
+        <div class="card-details">
+          <h4>Total Income</h4>
+          <p th:text="'₹' + ${totalIncome}"></p>
+        </div>
+        <i class="fa-solid fa-wallet"></i>
+      </div>
+      <div class="card card-expense">
+        <div class="card-details">
+          <h4>Total Expense</h4>
+          <p th:text="'₹' + ${totalExpense}"></p>
+        </div>
+        <i class="fa-solid fa-coins"></i>
+      </div>
+    </div>
+
+    <div class="section-row">
+      <div class="box">
+        <h3>Recent Transactions</h3>
+        <ul>
+          <li th:each="exp : ${recentExpenses}">
+            <span th:text="'Expense: ' + ${exp.category.name} + ' - ₹' + ${exp.amount}"></span>
+          </li>
+          <li th:each="inc : ${recentIncomes}">
+            <span th:text="'Income: ' + ${inc.category.name} + ' - ₹' + ${inc.amount}"></span>
+          </li>
+        </ul>
+      </div>
+      <!-- <div class="box">
+        <h3>Financial Overview</h3>
+        <p th:text="'Total Balance: ₹' + ${totalBalance}"></p>
+        <div class="legend">
+          <span><span class="dot purple"></span>Total Balance</span>
+          <span><span class="dot red"></span>Total Expense</span>
+          <span><span class="dot green"></span>Total Income</span>
+        </div>
+      </div> -->
+      <div class="card box">
+        <h5>Financial Overview</h5>
+        <canvas id="financeChart"></canvas>
+      </div>
+    </div>
+
+    <div class="section-row">
+      <div class="box">
+        <h3>Recent Expenses</h3>
+        <ul>
+          <li th:each="exp : ${recentExpenses}">
+            <span th:text="${exp.date} + ' - ' + ${exp.category.name} + ' - ₹' + ${exp.amount}"></span>
+          </li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>Recent Incomes</h3>
+        <ul>
+          <li th:each="inc : ${recentIncomes}">
+            <span th:text="${inc.date} + ' - ' + ${inc.category.name} + ' - ₹' + ${inc.amount}"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/dashboard.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script th:inline="javascript">
+    const totalIncome = [[${ totalIncome != null ? totalIncome : 0}]];
+    const totalExpense = [[${ totalExpense != null ? totalExpense : 0}]];
+    const totalBalance = [[${ totalBalance != null ? totalBalance : 0}]];
+
+    const ctx = document.getElementById('financeChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Income', 'Expense', 'Balance'],
+        datasets: [{
+          data: [totalIncome, totalExpense, totalBalance],
+          backgroundColor: ['#4caf50', '#e53935', '#3f51b5'], // green, red, blue
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
