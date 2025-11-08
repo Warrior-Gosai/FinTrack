@@ -49,7 +49,23 @@ FinTrack/ <br/>
 │── pom.xml # Maven dependencies <br/>
 │── README.md # Documentation <br/>
 
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+If you’d like to improve WebineX, feel free to fork the repo and submit a pull request.
 
 ---
 
-<h3> Developed by : @Warrior-Gosai </h3>
+## 🧾 License
+
+This project is open-source and available under the MIT License.
+
+---
+
+## 📧 Contact
+
+Developer: Kartik Gosai
+<br>
+GitHub: https://github.com/Warrior-Gosai
