@@ -54,7 +54,7 @@ FinTrack/ <br/>
 ## 🤝 Contributing
 
 Contributions are welcome!
-If you’d like to improve WebineX, feel free to fork the repo and submit a pull request.
+If you’d like to improve FinTrack, feel free to fork the repo and submit a pull request.
 
 ---
 
