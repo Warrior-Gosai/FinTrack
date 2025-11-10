@@ -14,10 +14,10 @@ It allows users to **track income, expenses, categories, and filter transactions
 
 - 🔐 User Authentication (Signup, Signin with Session-based login)
 - 📊 Dashboard with income & expense overview
-- 📂 Manage categories (Income / Expense types)
+- 📂 Manage categories
 - ➕ Add / View Income and Expense records
 - 🔎 Filter transactions by category, date, or type
-- 📱 Responsive design (Bootstrap-based, works on mobile & desktop)
+- 📱 Responsive design
 
 ---
 
@@ -51,6 +51,16 @@ FinTrack/ <br/>
 
 ---
 
+## 📈 Future Enhancements
+
+- 📤 Export financial reports to PDF / Excel
+- 📊 Graphical charts (Income vs Expense trends)
+- 👥 Multi-user role support (Admin, User)
+- 📱 REST API for mobile integration
+- 🎨 Theme customization and dark mode
+
+---
+
 ## 🤝 Contributing
 
 Contributions are welcome!
@@ -66,6 +76,6 @@ This project is open-source and available under the MIT License.
 
 ## 📧 Contact
 
-Developer: Kartik Gosai
+Developed with ❤️ by Kartik Gosai using Spring Boot & Thymeleaf
 <br>
 GitHub: https://github.com/Warrior-Gosai
