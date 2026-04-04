@@ -157,6 +157,16 @@
                 <span class="toggle-password" onclick="togglePassword()"></span>
             </div>
 
+            <div class="input-group">
+                <label for="securityQuestion" class="form-label">Security Question</label>
+                <select id="securityQuestion" name="securityQuestion" class="form-select" required>
+                    <option value="">-- Select a question --</option>
+                    <option value="What is your favorite color?">What is your favorite color?</option>
+                    <option value="What is your pet's name?">What is your pet's name?</option>
+                    <option value="What city were you born in?">What city were you born in?</option>
+                </select>
+            </div>
+
             <button type="submit" class="signup-btn">SIGN UP</button>
             <p class="login-link">Already have an account? <a href="/signin">Login</a></p>
         </form>

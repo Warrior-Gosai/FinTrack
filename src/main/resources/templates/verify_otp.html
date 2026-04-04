@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Verify OTP | FinTrack</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2>OTP Verification</h2>
+
+        <p>We’ve generated a one-time password for you:</p>
+        <h3 style="color:green; font-size:1.5rem;">OTP: <span th:text="${generatedOtp}"></span></h3>
+        <p style="color:#555;">Enter this OTP below to continue.</p>
+
+        <form action="/verify-otp" method="post">
+            <input type="number" name="enteredOtp" placeholder="Enter OTP" required class="form-control">
+            <button type="submit" class="btn btn-success mt-3">Verify OTP</button>
+        </form>
+
+        <p th:if="${error}" th:text="${error}" style="color:red;"></p>
+    </div>
+</body>
+
+</html>
