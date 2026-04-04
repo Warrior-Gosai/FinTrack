@@ -1,24 +1,24 @@
-# Stage 1: Build with Maven
+# ---------- Stage 1: Build ----------
 FROM maven:3.9.1-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy Maven config first for dependency caching
+# Copy files
 COPY pom.xml .
 COPY src ./src
 
-# Build the JAR
+# Build JAR
 RUN mvn clean package -DskipTests
 
-# Stage 2: Runtime with lightweight OpenJDK
-FROM openjdk:17-jdk-slim
+
+# ---------- Stage 2: Run ----------
+FROM eclipse-temurin:17-jdk-jammy
 WORKDIR /app
 
-# Copy the built JAR from the build stage
+# Copy JAR from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Use Render’s dynamic PORT
-ENV PORT=8080
-EXPOSE $PORT
+# Expose port (Render will override)
+EXPOSE 8080
 
-# Start Spring Boot
-ENTRYPOINT ["java","-jar","/app.jar"]
+# Run application
+ENTRYPOINT ["java", "-jar", "app.jar"]
