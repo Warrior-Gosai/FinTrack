@@ -20,6 +20,6 @@ COPY --from=build /app/target/*.jar app.jar
 ENV PORT=8080
 EXPOSE $PORT
 
-# Start Spring Boot Application 
+# Start Spring Boot Application.
 ENTRYPOINT ["java","-jar","/app.jar"]
 
